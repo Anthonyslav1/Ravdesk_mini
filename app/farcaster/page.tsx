@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
+import DashboardClient from './DashboardClient';
 
 // Reuse the same dashboard as the main page
-const DashboardLegacy = dynamic(() => import('../../components/Dashboard.jsx'), { ssr: false });
 
 export const metadata: Metadata = {
   title: 'Ravdesk Escrow - Secure Multi-Party Contracts',
@@ -11,5 +10,5 @@ export const metadata: Metadata = {
 
 export default function FarcasterPage() {
   // Render the exact same UI as the main route
-  return <DashboardLegacy hideChrome />;
+  return <DashboardClient />;
 }

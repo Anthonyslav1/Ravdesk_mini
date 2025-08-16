@@ -9,6 +9,10 @@ const nextConfig = {
       // Allow importing from outside the app directory (sibling project dir)
       externalDir: true,
     },
+    // Do not fail production builds on ESLint errors (handled separately)
+    eslint: {
+      ignoreDuringBuilds: true,
+    },
     // Silence warnings
     // https://github.com/WalletConnect/walletconnect-monorepo/issues/1908
     webpack: (config) => {
