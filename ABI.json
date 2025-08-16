@@ -1,0 +1,327 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {"name": "clients", "type": "address[]", "internalType": "address[]"},
+      {"name": "freelancers", "type": "address[]", "internalType": "address[]"},
+      {"name": "milestoneAmounts", "type": "uint256[]", "internalType": "uint256[]"},
+      {"name": "milestoneDescriptions", "type": "string[]", "internalType": "string[]"},
+      {"name": "isTimeLock", "type": "bool", "internalType": "bool"},
+      {"name": "releaseTime", "type": "uint256", "internalType": "uint256"},
+      {"name": "freelancerPercentages", "type": "uint256[]", "internalType": "uint256[]"},
+      {"name": "adminCouncilMembers", "type": "address[]", "internalType": "address[]"}
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "ADMIN_FEE_PERCENT",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "CONSENSUS_THRESHOLD",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "EMERGENCY_DURATION",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MAX_PARTIES",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "activateEmergency",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "adminCancel",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "adminConsensusCount",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "adminCouncil",
+    "inputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "outputs": [{"name": "", "type": "address", "internalType": "address"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "agreement",
+    "inputs": [],
+    "outputs": [
+      {"name": "totalAmount", "type": "uint256", "internalType": "uint256"},
+      {"name": "milestoneCount", "type": "uint256", "internalType": "uint256"},
+      {"name": "currentMilestone", "type": "uint256", "internalType": "uint256"},
+      {"name": "isActive", "type": "bool", "internalType": "bool"},
+      {"name": "isCancelled", "type": "bool", "internalType": "bool"},
+      {"name": "isTimeLock", "type": "bool", "internalType": "bool"},
+      {"name": "releaseTime", "type": "uint256", "internalType": "uint256"},
+      {"name": "depositedAmount", "type": "uint256", "internalType": "uint256"},
+      {"name": "netAmount", "type": "uint256", "internalType": "uint256"}
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "approvals",
+    "inputs": [{"name": "", "type": "address", "internalType": "address"}],
+    "outputs": [{"name": "", "type": "bool", "internalType": "bool"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "approveAction",
+    "inputs": [{"name": "isRelease", "type": "bool", "internalType": "bool"}],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "clientContributions",
+    "inputs": [{"name": "", "type": "address", "internalType": "address"}],
+    "outputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "completeMilestone",
+    "inputs": [{"name": "milestoneId", "type": "uint256", "internalType": "uint256"}],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "deactivateEmergency",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "deposit",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "emergencyActivatedAt",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "emergencyPaused",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "bool", "internalType": "bool"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "forceRelease",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "freelancerShares",
+    "inputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "outputs": [
+      {"name": "freelancer", "type": "address", "internalType": "address"},
+      {"name": "percentage", "type": "uint256", "internalType": "uint256"}
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getContractBalance",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getFreelancerShare",
+    "inputs": [{"name": "freelancer", "type": "address", "internalType": "address"}],
+    "outputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getMilestone",
+    "inputs": [{"name": "milestoneId", "type": "uint256", "internalType": "uint256"}],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct RavdeskEscrowSecure.Milestone",
+        "components": [
+          {"name": "amount", "type": "uint256", "internalType": "uint256"},
+          {"name": "description", "type": "string", "internalType": "string"},
+          {"name": "isCompleted", "type": "bool", "internalType": "bool"},
+          {"name": "isReleased", "type": "bool", "internalType": "bool"}
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getPendingWithdrawal",
+    "inputs": [{"name": "account", "type": "address", "internalType": "address"}],
+    "outputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isAdmin",
+    "inputs": [{"name": "", "type": "address", "internalType": "address"}],
+    "outputs": [{"name": "", "type": "bool", "internalType": "bool"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "milestones",
+    "inputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "outputs": [
+      {"name": "amount", "type": "uint256", "internalType": "uint256"},
+      {"name": "description", "type": "string", "internalType": "string"},
+      {"name": "isCompleted", "type": "bool", "internalType": "bool"},
+      {"name": "isReleased", "type": "bool", "internalType": "bool"}
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "pendingWithdrawals",
+    "inputs": [{"name": "", "type": "address", "internalType": "address"}],
+    "outputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "timeLockRelease",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "totalReleased",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "withdraw",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "AdminFeePaid",
+    "inputs": [{"name": "amount", "type": "uint256", "indexed": false, "internalType": "uint256"}],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ApprovalSubmitted",
+    "inputs": [
+      {"name": "approver", "type": "address", "indexed": true, "internalType": "address"},
+      {"name": "isRelease", "type": "bool", "indexed": false, "internalType": "bool"}
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ContractCancelled",
+    "inputs": [{"name": "canceller", "type": "address", "indexed": true, "internalType": "address"}],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ContractFunded",
+    "inputs": [
+      {"name": "totalAmount", "type": "uint256", "indexed": false, "internalType": "uint256"},
+      {"name": "netAmount", "type": "uint256", "indexed": false, "internalType": "uint256"}
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Deposited",
+    "inputs": [
+      {"name": "client", "type": "address", "indexed": true, "internalType": "address"},
+      {"name": "amount", "type": "uint256", "indexed": false, "internalType": "uint256"}
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "EmergencyActivated",
+    "inputs": [{"name": "activator", "type": "address", "indexed": true, "internalType": "address"}],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "EmergencyDeactivated",
+    "inputs": [],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FundsReleased",
+    "inputs": [
+      {"name": "milestoneId", "type": "uint256", "indexed": true, "internalType": "uint256"},
+      {"name": "amount", "type": "uint256", "indexed": false, "internalType": "uint256"}
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MilestoneCompleted",
+    "inputs": [
+      {"name": "milestoneId", "type": "uint256", "indexed": true, "internalType": "uint256"},
+      {"name": "description", "type": "string", "indexed": false, "internalType": "string"}
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "WithdrawalQueued",
+    "inputs": [
+      {"name": "recipient", "type": "address", "indexed": true, "internalType": "address"},
+      {"name": "amount", "type": "uint256", "indexed": false, "internalType": "uint256"}
+    ],
+    "anonymous": false
+  }
+]
