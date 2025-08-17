@@ -4,7 +4,7 @@ export const FARCASTER_CONFIG = {
   version: "1",
   name: "Ravdesk Escrow",
   description: "Secure multi-party escrow contracts on blockchain",
-  imageUrl: "https://placehold.co/600x400/png?text=Ravdesk+Miniapp", // 3:2 aspect ratio image
+  imageUrl: "https://raw.githubusercontent.com/Anthonyslav1/Ravdesk_mini/refs/heads/master/Ravdesk.jpg", // 3:2 aspect ratio image
   
   // Frame configuration
   buttons: [
@@ -29,7 +29,7 @@ export const FARCASTER_CONFIG = {
   // Miniapp embed structure
   embed: {
     version: "1",
-    imageUrl: "https://placehold.co/600x400/png?text=Ravdesk+Miniapp",
+    imageUrl: "https://raw.githubusercontent.com/Anthonyslav1/Ravdesk_mini/refs/heads/master/Ravdesk.jpg",
     button: {
       title: "Launch Ravdesk Escrow",
       action: {
@@ -47,12 +47,12 @@ export const generateFrameMetaTags = () => {
     // OpenGraph fallback
     { property: "og:title", content: "Ravdesk Escrow - Secure Multi-Party Contracts" },
     { property: "og:description", content: "Revolutionary blockchain escrow platform for secure payments" },
-    { property: "og:image", content: `https://placehold.co/1145x600/png?text=Ravdesk+Escrow` },
+    { property: "og:image", content: `https://raw.githubusercontent.com/Anthonyslav1/Ravdesk_mini/refs/heads/master/Ravdesk.jpg` },
     { property: "og:type", content: "website" },
     
     // Farcaster Frame meta tags (vNext)
     { name: "fc:frame", content: "vNext" },
-    { name: "fc:frame:image", content: `https://placehold.co/1145x600/png?text=Ravdesk+Escrow` },
+    { name: "fc:frame:image", content: `https://raw.githubusercontent.com/Anthonyslav1/Ravdesk_mini/refs/heads/master/Ravdesk.jpg` },
     { name: "fc:frame:image:aspect_ratio", content: "1.91:1" },
     { name: "fc:frame:post_url", content: `${baseUrl}/api/frame` },
     { name: "fc:frame:button:1", content: "🏦 Create Escrow" },
@@ -63,7 +63,7 @@ export const generateFrameMetaTags = () => {
     // Farcaster Miniapp embed
     { name: "fc:miniapp", content: JSON.stringify({
       version: "1",
-      imageUrl: `https://placehold.co/600x400/png?text=Ravdesk+Miniapp`,
+      imageUrl: `https://raw.githubusercontent.com/Anthonyslav1/Ravdesk_mini/refs/heads/master/Ravdesk.jpg`,
       button: {
         title: "Launch Ravdesk Escrow",
         action: { type: "launch_miniapp" }

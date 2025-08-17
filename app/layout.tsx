@@ -10,13 +10,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Ravdesk Escrow - Secure Multi-Party Contracts',
     description: 'Revolutionary blockchain escrow platform for secure payments',
-    images: ['https://placehold.co/1145x600/png?text=Ravdesk+Escrow'],
+    images: ['https://raw.githubusercontent.com/Anthonyslav1/Ravdesk_mini/refs/heads/master/Ravdesk.jpg'],
     type: 'website',
   },
   other: {
     // Farcaster Frame meta tags (vNext)
     'fc:frame': 'vNext',
-    'fc:frame:image': 'https://placehold.co/1145x600/png?text=Ravdesk+Escrow',
+    'fc:frame:image': 'https://raw.githubusercontent.com/Anthonyslav1/Ravdesk_mini/refs/heads/master/Ravdesk.jpg',
     'fc:frame:image:aspect_ratio': '1.91:1',
     'fc:frame:post_url': `${process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || ''}/api/frame`,
     'fc:frame:button:1': '🏦 Create Escrow',
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     // Farcaster Miniapp embed
     'fc:miniapp': JSON.stringify({
       version: '1',
-      imageUrl: 'https://placehold.co/600x400/png?text=Ravdesk+Miniapp',
+      imageUrl: 'https://raw.githubusercontent.com/Anthonyslav1/Ravdesk_mini/refs/heads/master/Ravdesk.jpg',
       button: {
         title: 'Launch Ravdesk Escrow',
         action: { type: 'launch_miniapp' },

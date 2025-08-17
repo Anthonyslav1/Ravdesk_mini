@@ -1,10 +1,10 @@
 export const runtime = 'edge';
 
 function frameHtml() {
-  const image = 'https://placehold.co/1145x600/png?text=Ravdesk+Escrow';
+  const image = 'https://raw.githubusercontent.com/Anthonyslav1/Ravdesk_mini/refs/heads/master/Ravdesk.jpg';
   const miniappJson = JSON.stringify({
     version: '1',
-    imageUrl: 'https://placehold.co/600x400/png?text=Ravdesk+Miniapp',
+    imageUrl: 'https://raw.githubusercontent.com/Anthonyslav1/Ravdesk_mini/refs/heads/master/Ravdesk.jpg',
     button: {
       title: 'Launch Ravdesk Escrow',
       action: { type: 'launch_miniapp' },
