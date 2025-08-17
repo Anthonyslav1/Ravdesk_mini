@@ -5,7 +5,7 @@ import ABI from '@/ABI.json';
 export const runtime = 'nodejs';
 
 function getRpcUrl(): string {
-  return process.env.NEXT_PUBLIC_RPC_URL || process.env.RPC_URL || 'https://rpc-amoy.polygon.technology/';
+  return process.env.NEXT_PUBLIC_RPC_URL || process.env.RPC_URL || 'https://mainnet.base.org';
 }
 
 function getWeb3(): Web3 {
@@ -81,7 +81,12 @@ export async function GET(req: NextRequest) {
       const count = Number(agreement.milestoneCount);
       for (let i = 0; i < count; i++) {
         try {
-          const m = await contract.methods.getMilestone(i).call();
+          const m = (await contract.methods.getMilestone(i).call()) as {
+            amount: string | number;
+            description?: string;
+            isCompleted: boolean;
+            isReleased: boolean;
+          };
           milestones.push({
             amount: safeFromWei(web3, m.amount),
             description: m.description || `Milestone ${i + 1}`,

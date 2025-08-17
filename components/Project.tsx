@@ -169,7 +169,7 @@ function Project({ web3, account, networkCorrect, switchToPolygonMainnet, role, 
       try {
         const totalWei = isTimeLock
           ? web3.utils.toWei(totalAmount || '0', 'ether')
-          : milestoneAmounts.reduce((sum: bigint, w: string) => sum + BigInt(w), 0n).toString();
+          : milestoneAmounts.reduce((sum: bigint, w: string) => sum + BigInt(w), BigInt(0)).toString();
 
         const payload = {
           address: contractAddress,
