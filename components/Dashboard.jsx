@@ -19,6 +19,10 @@ import axios from 'axios';
 import Project from './Project';
 import ABI from '../ABI.json';
 
+// Wagmi / viem for Farcaster-native wallet integration
+import { useAccount, useChainId, usePublicClient, useWalletClient } from 'wagmi';
+import { isAddress, encodeFunctionData, parseEther } from 'viem';
+
 import Navbar from './Navbar';
 import Footer from './Footer';
  
@@ -49,6 +53,15 @@ function Dashboard({ hideChrome = false }) {
   });
   const BASE_MAINNET_CHAIN_ID = '8453';
   const contractsPerPage = 6;
+
+  // Wagmi hooks (Farcaster native)
+  const { address: wagmiAddress } = useAccount();
+  const chainId = useChainId();
+  const { data: walletClient } = useWalletClient();
+  const publicClient = usePublicClient();
+
+  // Sidebar width adjusts for Farcaster/hideChrome
+  const sidebarWidthClass = hideChrome ? 'w-40' : 'w-64';
 
   // **Derived Data**
   const filteredContracts = useMemo(() => {
@@ -104,6 +117,18 @@ function Dashboard({ hideChrome = false }) {
     });
   }, [contracts]);
 
+  // Sync wagmi account -> local state for legacy code paths
+  useEffect(() => {
+    if (wagmiAddress) setAccount(wagmiAddress);
+  }, [wagmiAddress]);
+
+  // Set network correctness from wagmi chainId when available
+  useEffect(() => {
+    if (chainId != null) {
+      setNetworkCorrect(chainId.toString() === BASE_MAINNET_CHAIN_ID);
+    }
+  }, [chainId]);
+
   // **Helper Functions**
   const safeJSONParse = (str, fallback = null) => {
     if (!str) return fallback;
@@ -155,7 +180,7 @@ function Dashboard({ hideChrome = false }) {
         }
       }).catch((err) => setError('Failed to get accounts: ' + err.message));
     } else {
-      setError('Please install MetaMask to use this dashboard.');
+      // No injected provider; in Farcaster/OnchainKit we rely on wagmi/viem.
     }
 
     return () => console.log('Dashboard unmounted');
@@ -174,7 +199,7 @@ function Dashboard({ hideChrome = false }) {
     }
   };
 
-  const switchToPolygonMainnet = async () => {
+  const switchToBaseMainnet = async () => {
     if (!web3) return;
     try {
       await window.ethereum.request({
@@ -204,10 +229,29 @@ function Dashboard({ hideChrome = false }) {
 
   // **Wallet Connection**
   const handleWalletConnect = async () => {
+    // If Farcaster/wagmi wallet already available, just sync and fetch
+    if (walletClient && wagmiAddress) {
+      if (!networkCorrect) {
+        setError('Please switch to Base Mainnet.');
+        return;
+      }
+      setIsConnecting(true);
+      setError('');
+      setInfoMessage('');
+      try {
+        setAccount(wagmiAddress);
+        await fetchUserContracts();
+      } catch (error) {
+        setError('Connection failed: ' + (error?.message || String(error)));
+      } finally {
+        setIsConnecting(false);
+      }
+      return;
+    }
     if (!web3) return setError('Please install MetaMask!');
     if (!networkCorrect) {
       setError('Please switch to Base Mainnet.');
-      await switchToPolygonMainnet();
+      await switchToBaseMainnet();
       return;
     }
     setIsConnecting(true);
@@ -246,8 +290,8 @@ function Dashboard({ hideChrome = false }) {
 
   // **Fetch User Contracts**
   const fetchUserContracts = async () => {
-    if (!account || !web3) {
-      console.log('No account or web3 instance available.');
+    if (!account) {
+      console.log('No account available.');
       setError('Please connect your wallet.');
       return;
     }
@@ -294,7 +338,7 @@ function Dashboard({ hideChrome = false }) {
         userContractsData.map(async (contractData) => {
           try {
             console.log('Processing contract:', contractData.address);
-            if (!web3.utils.isAddress(contractData.address)) {
+            if (!isAddress(contractData.address)) {
               console.warn(`Invalid contract address detected: ${contractData.address}`);
               return null;
             }
@@ -390,12 +434,43 @@ function Dashboard({ hideChrome = false }) {
       return;
     }
 
-    if (!web3 || !account) {
+    if (!account) {
       setError('Please connect your wallet');
       return;
     }
 
     try {
+      // Prefer viem/wagmi wallet if available (Farcaster native)
+      if (walletClient && publicClient && wagmiAddress) {
+        const data = encodeFunctionData({ abi: CONTRACT_ABI, functionName: 'deposit', args: [] });
+        const value = parseEther(String(amount));
+
+        // Estimate gas if possible
+        let gas;
+        try {
+          gas = await publicClient.estimateGas({
+            account: wagmiAddress,
+            to: contractAddress,
+            value,
+            data,
+          });
+        } catch {}
+
+        const hash = await walletClient.sendTransaction({
+          to: contractAddress,
+          value,
+          data,
+          ...(gas ? { gas } : {}),
+        });
+
+        console.log('Transaction sent:', hash);
+        setDepositAmounts((prev) => ({ ...prev, [contractAddress]: '' }));
+        fetchUserContracts();
+        return;
+      }
+
+      // Fallback to Web3.js path for browsers with MetaMask
+      if (!web3) throw new Error('No wallet client available');
       const contract = new web3.eth.Contract(CONTRACT_ABI, contractAddress);
       const amountInWei = web3.utils.toWei(amount, 'ether');
 
@@ -414,7 +489,7 @@ function Dashboard({ hideChrome = false }) {
 
       if (BigInt(balanceInWei) < totalCostInWei) {
         setError(
-          `Insufficient balance: ${balanceInEther} MATIC available, need ${totalCostInEther} MATIC (including gas)`
+          `Insufficient balance: ${balanceInEther} ETH available, need ${totalCostInEther} ETH (including gas)`
         );
         return;
       }
@@ -432,7 +507,7 @@ function Dashboard({ hideChrome = false }) {
     } catch (err) {
       console.error('Deposit error:', err);
       let errorMessage = 'Deposit failed: ';
-      if (err.code === -32000 || err.message.includes('insufficient funds')) {
+      if (err.code === -32000 || err.message?.includes?.('insufficient funds')) {
         errorMessage += 'Insufficient funds for gas or deposit.';
       } else if (err.code === 4001) {
         errorMessage += 'Transaction rejected by user.';
@@ -445,9 +520,28 @@ function Dashboard({ hideChrome = false }) {
 
   // **Handle Approve Action**
   const handleApproveAction = async (contractAddress, isRelease) => {
-    if (!web3 || !account) return setError('Please connect your wallet.');
+    if (!account) return setError('Please connect your wallet.');
 
     try {
+      // Prefer viem/wagmi path
+      if (walletClient && publicClient && wagmiAddress) {
+        const data = encodeFunctionData({
+          abi: CONTRACT_ABI,
+          functionName: 'approveAction',
+          args: [Boolean(isRelease)],
+        });
+        let gas;
+        try {
+          gas = await publicClient.estimateGas({ account: wagmiAddress, to: contractAddress, data });
+        } catch {}
+        const hash = await walletClient.sendTransaction({ to: contractAddress, data, ...(gas ? { gas } : {}) });
+        console.log('Approval tx sent:', hash);
+        fetchUserContracts();
+        return hash;
+      }
+
+      // Fallback to Web3.js
+      if (!web3) throw new Error('No wallet client available');
       const contract = new web3.eth.Contract(CONTRACT_ABI, contractAddress);
       const gasEstimate = await contract.methods.approveAction(isRelease).estimateGas({ from: account });
       const gasPrice = await web3.eth.getGasPrice();
@@ -493,12 +587,12 @@ function Dashboard({ hideChrome = false }) {
 
   // **Auto-Refresh**
   useEffect(() => {
-    if (account && web3) {
+    if (account) {
       fetchUserContracts();
       const interval = setInterval(fetchUserContracts, 30000);
       return () => clearInterval(interval);
     }
-  }, [account, web3]);
+  }, [account]);
 
   // **Render**
   return (
@@ -520,7 +614,7 @@ function Dashboard({ hideChrome = false }) {
           <motion.div
             initial={{ x: -100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className="w-64 bg-[#2A2A2A] min-h-screen fixed"
+            className={`${sidebarWidthClass} bg-[#2A2A2A] min-h-screen fixed`}
           >
             <div className="p-4">
               <nav className="space-y-2">
@@ -570,7 +664,7 @@ function Dashboard({ hideChrome = false }) {
         )}
 
         {/* Main Content */}
-        <div className={`flex-1 p-8 ${isSidebarOpen ? 'ml-64' : 'ml-0'}`}>
+        <div className={`flex-1 p-8 ${isSidebarOpen ? (hideChrome ? 'ml-40' : 'ml-64') : 'ml-0'}`}>
           <motion.div
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -652,7 +746,7 @@ function Dashboard({ hideChrome = false }) {
               web3={web3}
               account={account}
               networkCorrect={networkCorrect}
-              switchToPolygonMainnet={switchToPolygonMainnet}
+              switchToBaseMainnet={switchToBaseMainnet}
               onDeployed={fetchUserContracts}
             />
           )}

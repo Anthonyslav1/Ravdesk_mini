@@ -15,12 +15,12 @@ type ProjectProps = {
   web3: Web3 | null;
   account: string | null;
   networkCorrect: boolean;
-  switchToPolygonMainnet: () => Promise<void>;
+  switchToBaseMainnet: () => Promise<void>;
   role?: string;
   onDeployed?: (address: string) => void;
 };
 
-function Project({ web3, account, networkCorrect, switchToPolygonMainnet, role, onDeployed }: ProjectProps) {
+function Project({ web3, account, networkCorrect, switchToBaseMainnet, role, onDeployed }: ProjectProps) {
   const [clientCount, setClientCount] = useState(1);
   const [freelancerCount, setFreelancerCount] = useState(1);
   const [milestoneCount, setMilestoneCount] = useState(1);
@@ -74,7 +74,7 @@ function Project({ web3, account, networkCorrect, switchToPolygonMainnet, role, 
     }
     if (!networkCorrect) {
       alert('Please switch to Base Mainnet.');
-      await switchToPolygonMainnet();
+      await switchToBaseMainnet();
       return;
     }
     if (clients.some(c => !web3.utils.isAddress(c)) || freelancers.some(f => !web3.utils.isAddress(f))) {

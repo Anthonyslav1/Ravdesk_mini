@@ -49,9 +49,18 @@ interface Contract {
 }
 
 export default function RavdeskEscrowApp() {
+  const { setFrameReady, isFrameReady, context } = useMiniKit();
+  
+  // Set frame ready when component mounts
+  useEffect(() => {
+    if (!isFrameReady) {
+      setFrameReady();
+    }
+  }, [setFrameReady, isFrameReady]);
+
   // Show the legacy Dashboard at the root route so users can create contracts
   return <DashboardLegacy hideChrome />;
-  const { setFrameReady, isFrameReady, context } = useMiniKit();
+
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [viewMode, setViewMode] = useState<'home' | 'contracts' | 'create'>('home');
   const [isLoading, setIsLoading] = useState(false);
@@ -74,13 +83,6 @@ export default function RavdeskEscrowApp() {
   // Contract write hooks
   const { deposit } = useDeposit();
   const { completeMilestone } = useCompleteMilestone();
-
-  // Set frame ready when component mounts
-  useEffect(() => {
-    if (!isFrameReady) {
-      setFrameReady();
-    }
-  }, [setFrameReady, isFrameReady]);
 
   // Update contracts from real contract data
   useEffect(() => {
