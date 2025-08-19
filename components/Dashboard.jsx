@@ -20,11 +20,16 @@ import Project from './Project';
 import ABI from '../ABI.json';
 
 // Wagmi / viem for Farcaster-native wallet integration
-import { useAccount, useChainId, usePublicClient, useWalletClient } from 'wagmi';
+import { useAccount, useChainId, usePublicClient, useWalletClient, useSwitchChain, useDisconnect } from 'wagmi';
+import { base as baseChain } from 'wagmi/chains';
 import { isAddress, encodeFunctionData, parseEther } from 'viem';
 
 import Navbar from './Navbar';
 import Footer from './Footer';
+import { 
+  ConnectWallet as OckConnectWallet, 
+  Wallet as OckWallet 
+} from '@coinbase/onchainkit/wallet';
  
 
 // The full ABI provided
@@ -59,6 +64,8 @@ function Dashboard({ hideChrome = false }) {
   const chainId = useChainId();
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
+  const { switchChain } = useSwitchChain();
+  const { disconnect } = useDisconnect();
 
   // Sidebar width adjusts for Farcaster/hideChrome
   const sidebarWidthClass = hideChrome ? 'w-40' : 'w-64';
@@ -160,7 +167,7 @@ function Dashboard({ hideChrome = false }) {
     return array.some((element) => element.toLowerCase() === itemLower);
   };
 
-  // **Web3 Initialization**
+  // **Web3 Initialization** (no auto-connect)
   useEffect(() => {
     if (window.ethereum) {
       const web3Instance = new Web3(window.ethereum);
@@ -172,13 +179,6 @@ function Dashboard({ hideChrome = false }) {
         if (accounts.length > 0) fetchUserContracts();
       });
       window.ethereum.on('chainChanged', () => checkNetwork(web3Instance));
-
-      web3Instance.eth.getAccounts().then((accounts) => {
-        if (accounts.length > 0) {
-          setAccount(accounts[0]);
-          fetchUserContracts();
-        }
-      }).catch((err) => setError('Failed to get accounts: ' + err.message));
     } else {
       // No injected provider; in Farcaster/OnchainKit we rely on wagmi/viem.
     }
@@ -200,7 +200,22 @@ function Dashboard({ hideChrome = false }) {
   };
 
   const switchToBaseMainnet = async () => {
-    if (!web3) return;
+    try {
+      // Prefer wagmi switchChain for WalletConnect/Coinbase Wallet and Farcaster wallet
+      if (switchChain) {
+        await switchChain({ chainId: baseChain.id });
+        setError('');
+        return;
+      }
+    } catch (e) {
+      console.warn('wagmi switchChain failed, falling back to injected provider:', e?.message || e);
+    }
+
+    // Fallback to injected provider path
+    if (!web3 || !window.ethereum) {
+      setError('Unable to switch network automatically. Please switch to Base network in your wallet.');
+      return;
+    }
     try {
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
@@ -269,11 +284,11 @@ function Dashboard({ hideChrome = false }) {
   };
 
   const handleDisconnect = () => {
+    try { disconnect(); } catch {}
     setAccount(null);
     setContracts([]);
     setError('');
     setInfoMessage('');
-    alert('Wallet disconnected!');
   };
 
   // **Retry Mechanism**
@@ -683,16 +698,11 @@ function Dashboard({ hideChrome = false }) {
                 </button>
               </div>
             ) : (
-              <button
-                onClick={handleWalletConnect}
-                disabled={isConnecting}
-                className={`bg-[#00C4B4] text-white px-6 py-3 rounded-lg flex items-center space-x-2 hover:bg-[#00A89B] transition ${
-                  isConnecting ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-              >
-                <Wallet size={20} />
-                <span>{isConnecting ? 'Connecting...' : 'Connect Wallet'}</span>
-              </button>
+              <div className="inline-flex">
+                <OckWallet>
+                  <OckConnectWallet />
+                </OckWallet>
+              </div>
             )}
             {!networkCorrect && <span className="text-red-400">Switch to Base Mainnet</span>}
             {account && (
@@ -774,12 +784,11 @@ function Dashboard({ hideChrome = false }) {
                       Create New Contract
                     </button>
                   ) : (
-                    <button
-                      onClick={handleWalletConnect}
-                      className="bg-[#00C4B4] text-white px-4 py-2 rounded-lg hover:bg-[#00A89B] transition"
-                    >
-                      Connect Wallet
-                    </button>
+                    <div className="inline-flex">
+                      <OckWallet>
+                        <OckConnectWallet />
+                      </OckWallet>
+                    </div>
                   )}
                 </div>
               )}

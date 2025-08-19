@@ -1,0 +1,20 @@
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjExNDgwNjMsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHhiNjU0ZTUxQ2E2MUY2ZTBEY0E4ZjRlY2EwYzYwMWVDMDdlNUEzYjY1In0",
+    "payload": "eyJkb21haW4iOiJyYXZkZXNrLnZlcmNlbC5hcHAifQ",
+    "signature": "MHhjYjIxMjE5MDI3NWFmNTlmYTYzOGYxYzBhZGYzYmY5MmNhNTA0OGM1NDYxOTk4Yjc5YTkyMjQ1MWFmNTUwODkzN2IzOGZhMmNmYzZkNjFhNzQ3MjhkODI5Yjc0YTk4M2MxMmQwZGEyNTdkYzFkMThjNWRjYTk0ZTZlYmM2OTJkMjFi"
+  },
+  "frame": {
+    "name": "Ravdesk",
+    "version": "1",
+    "iconUrl": "https://raw.githubusercontent.com/Anthonyslav1/Ravdesk_mini/refs/heads/master/Ravdesk.jpg",
+    "homeUrl": "https://ravdesk.vercel.app",
+    "imageUrl": "https://raw.githubusercontent.com/Anthonyslav1/Ravdesk_mini/refs/heads/master/Ravdesk.jpg",
+    "splashImageUrl": "https://raw.githubusercontent.com/Anthonyslav1/Ravdesk_mini/refs/heads/master/Ravdesk.jpg",
+    "splashBackgroundColor": "#00C4B4",
+    "webhookUrl": "https://ravdesk.vercel.app/api/frame",
+    "primaryCategory": "finance",
+    "subtitle": "Multi-party escrow on Base",
+    "description": "Escrow on Base for freelancers, teams, and clients. Create contracts with milestones or timelocks, split payouts, and manage deposits and approvals onchain."
+  }
+}
